@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pramuka Drive Links — Cloudway0</title>
+  <style>
+    :root{
+      --accent: #2b7a78;
+      --glass: rgba(255,255,255,0.06);
+      --card-bg: rgba(255,255,255,0.9);
+      --ui-radius: 12px;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{color:#072f3f;background:#0b1220;overflow:hidden}
+
+    /* canvas covers whole screen */
+    #bg-canvas{position:fixed;inset:0;z-index:0;display:block}
+
+    /* UI container */
+    .app{
+      position:relative;z-index:5;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px;
+      box-sizing:border-box;
+    }
+
+    .panel{
+      width:min(980px,96%);backdrop-filter: blur(6px) saturate(120%);background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));border-radius:18px;padding:20px;box-shadow:0 8px 30px rgba(2,6,23,0.6);
+    }
+
+    header{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+    header h1{font-size:20px;margin:0;color:#fff}
+    header p{margin:0;color:rgba(255,255,255,0.8);font-size:13px}
+
+    .controls{display:flex;gap:12px;margin-left:auto;align-items:center}
+
+    .toggle{
+      display:inline-flex;align-items:center;gap:8px;background:var(--glass);padding:6px;border-radius:999px;cursor:pointer;user-select:none
+    }
+    .toggle input{display:none}
+    .toggle .switch{width:46px;height:26px;border-radius:999px;background:rgba(255,255,255,0.15);position:relative}
+    .toggle .knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:all .25s}
+    .toggle input:checked + .switch{background:linear-gradient(90deg,#ffb347,#ffcc33)}
+    .toggle input:checked + .switch .knob{left:23px}
+
+    /* Grid for link cards */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px}
+
+    .card{background:rgba(255,255,255,0.9);padding:14px;border-radius:12px;display:flex;flex-direction:column;gap:8px;min-height:110px;box-shadow:0 6px 18px rgba(2,6,23,0.2)}
+    .card h3{margin:0;font-size:16px;color:#072f3f}
+    .card p{margin:0;font-size:13px;color:#244c4a}
+    .card .btn{margin-top:auto;padding:8px 10px;border-radius:10px;background:var(--accent);color:#fff;text-decoration:none;text-align:center;display:inline-block}
+    .card .btn:active{transform:translateY(1px)}
+
+    .footer{margin-top:16px;color:rgba(255,255,255,0.85);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+    .footer .credits{opacity:0.95}
+
+    /* small screen tweaks */
+    @media (max-width:600px){
+      header h1{font-size:16px}
+      .panel{padding:12px;border-radius:14px}
+    }
+
+    /* accessibility focus */
+    .card:focus-within{outline:3px solid rgba(43,122,120,0.18)}
+
+    /* day/night transition overlay */
+    .overlay{position:fixed;inset:0;pointer-events:none;z-index:3;transition:background 0.7s}
+    .overlay.day{background:linear-gradient(rgba(255,255,255,0.02), rgba(255,255,255,0));mix-blend-mode:screen}
+    .overlay.night{background:linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.65));backdrop-filter: blur(2px)}
+
+    /* small helper for instructions */
+    .hint{font-size:13px;color:rgba(255,255,255,0.8);margin-top:8px}
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="overlay day" id="overlay"></div>
+
+  <div class="app">
+    <div class="panel" role="region" aria-label="Panel Link Drive Pramuka">
+      <header>
+        <div>
+          <h1>Pramuka — Link Google Drive</h1>
+          <p>Rayyan Kahlil Zakky • Tim Jurnal • Pramuka Semandu</p>
+        </div>
+
+        <div class="controls" style="margin-left:auto">
+          <label class="toggle" title="Tukar Siang/Malam (klik)">
+            <input id="dn-toggle" type="checkbox" aria-label="toggle day night">
+            <div class="switch"><div class="knob"></div></div>
+          </label>
+          <div class="hint" id="scene-label">Siang — Upacara</div>
+        </div>
+      </header>
+
+      <main>
+        <div class="grid" id="links-grid">
+          <!-- Example cards: edit `data-link` attribute dengan link Google Drive asli -->
+
+          <article class="card" tabindex="0">
+            <h3>Materi Upacara</h3>
+            <p>File PDF & Gambar</p>
+            <a class="btn" href="#" data-link="" target="_blank" rel="noopener noreferrer">Buka di Drive</a>
+          </article>
+
+          <article class="card" tabindex="0">
+            <h3>Dokumentasi Kegiatan</h3>
+            <p>Foto & Video</p>
+            <a class="btn" href="#" data-link="https://drive.google.com/drive/folders/1nIDIov5GWqPPDEW1Pm6FjFOJc1ldl0em?usp=sharing" target="_blank" rel="noopener noreferrer">Buka di Drive</a>
+          </article>
+
+        </div>
+        
+      </main>
+
+      <div class="footer">
+        <div class="credits">Powered by Cloudway0 — Tim Jurnal & Pramuka Semandu</div>
+        <div style="font-size:12px;opacity:0.9">Responsive • Pixel-anim • Interaktif</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Setup canvas ----------
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W = innerWidth, H = innerHeight; const DPR = Math.max(1, devicePixelRatio || 1);
+    function resize(){ W = innerWidth; H = innerHeight; canvas.width = Math.floor(W*DPR); canvas.height = Math.floor(H*DPR); canvas.style.width = W+'px'; canvas.style.height = H+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
+    addEventListener('resize', resize); resize();
+
+    // scene state
+    let isNight = false;
+    const toggle = document.getElementById('dn-toggle');
+    const overlay = document.getElementById('overlay');
+    const sceneLabel = document.getElementById('scene-label');
+
+    toggle.addEventListener('change', ()=>{ isNight = toggle.checked; updateScene(); });
+    function updateScene(){ overlay.className = 'overlay ' + (isNight? 'night' : 'day'); sceneLabel.textContent = isNight? 'Malam — Bakar Api Unggun' : 'Siang — Upacara'; }
+    updateScene();
+
+    // Pixel grid settings
+    const PIXEL = 4; // base pixel size
+    const cols = Math.ceil(W / (PIXEL*6));
+
+    // simple helper to draw a pixel block
+    function pfill(x,y,w,h,color){ ctx.fillStyle = color; ctx.fillRect(x,y,w,h); }
+
+    // ---------- Simple pixel sprites ----------
+    // We'll draw a flagpole + pramuka characters for day, and campfire + scouts for night.
+
+    let t = 0;
+    function drawDay(){
+      // background sky gradient (light)
+      const g = ctx.createLinearGradient(0,0,0,H);
+      g.addColorStop(0,'#8ed0ff'); g.addColorStop(1,'#cfefff'); ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+      // sun
+      ctx.beginPath(); ctx.globalAlpha = 0.95; ctx.fillStyle = '#ffd76a'; ctx.arc(W*0.85, H*0.15, 36 + 4*Math.sin(t*0.6), 0, Math.PI*2); ctx.fill(); ctx.globalAlpha = 1;
+
+      // grass
+      ctx.fillStyle = '#3aa76a'; ctx.fillRect(0,H-140,W,140);
+
+      // flagpole
+      const poleX = W*0.2; const poleTop = H-220; ctx.fillStyle='#6b4f3a'; ctx.fillRect(poleX, poleTop-120, 8, 160);
+      // flag (pixel style)
+      const fx = poleX+8, fy = poleTop-96; // animate waving
+      const wave = Math.sin(t*2)*6;
+      // draw flag as blocks
+      pfill(fx+wave, fy, 44, 12, '#b22222'); pfill(fx+wave, fy+12, 44, 12, '#ffecb3');
+
+      // small group of scouts (3) - simple pixel people
+      const baseY = H-140; const startX = W*0.32;
+      for(let i=0;i<3;i++){
+        const x = startX + i*44 + Math.sin(t*2 + i)*2;
+        drawScout(x, baseY, i%2===0? 'brown':'#0b6e4f', i);
+      }
+
+      // subtle particles (like confetti sunlight)
+      for(let i=0;i<12;i++){ const sx=(i*97+ t*20)%W; const sy=H-180 - (i*7%40); ctx.globalAlpha=0.08; pfill(sx, sy, 3,3, '#fff'); ctx.globalAlpha=1 }
+    }
+
+    function drawNight(){
+      // night sky
+      const g = ctx.createLinearGradient(0,0,0,H);
+      g.addColorStop(0,'#071229'); g.addColorStop(1,'#031426'); ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+      // stars
+      for(let i=0;i<60;i++){ const sx = ((i*57+t*10* (1+i%3))%W); const sy = (i*31)% (H*0.55); ctx.globalAlpha = 0.9; pfill(sx, sy, 2,2, '#fff'); ctx.globalAlpha = 1 }
+
+      // moon (thin)
+      ctx.beginPath(); ctx.fillStyle = '#f4f7d8'; ctx.arc(W*0.85, H*0.18, 28, 0, Math.PI*2); ctx.fill();
+
+      // ground darker
+      ctx.fillStyle = '#182b1f'; ctx.fillRect(0,H-140,W,140);
+
+      // campfire center
+      const cx = W*0.5, cy = H-110;
+      // logs
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(Math.sin(t*1.7)*0.03); pfill(-26,10,52,8,'#6b3b2a'); ctx.restore();
+      // flames — flicker with layers
+      const f1 = 20 + Math.abs(Math.sin(t*3))*12;
+      pfill(cx-8, cy-8-f1*0.2, 16, Math.max(6,f1*0.6), '#ff6b35');
+      pfill(cx-6, cy-14-f1*0.5, 12, Math.max(6,f1*0.4), '#ffd76a');
+
+      // scouts sitting around
+      for(let i=0;i<4;i++){ const ang = (i/4)*Math.PI*2 + t*0.02; const x = cx + Math.cos(ang)*80; const y = cy + Math.sin(ang)*26; drawScout(x,y,'#2b2b2b', i); }
+
+      // smoky particles
+      for(let i=0;i<8;i++){ const sx = cx + Math.sin(t*1.2 + i)*10; const sy = cy - 40 - i*6 - (Math.sin(t+i)*6); ctx.globalAlpha = 0.08; pfill(sx, sy, 6,6, '#ddd'); ctx.globalAlpha=1 }
+    }
+
+    // simple pixel-person drawer
+    function drawScout(x,y,color,seed){
+      // pixels scale
+      const s = 3 + (PIXEL/4);
+      // head
+      pfill(x-6, y-40, 12, 12, '#f3c7a3');
+      // hat
+      pfill(x-8 + (Math.sin(t*2+seed)*1.2), y-44, 16,4, color);
+      // body
+      pfill(x-10, y-28, 20, 18, color);
+      // scarf
+      pfill(x-10, y-20, 8,6, '#c52b2b'); pfill(x-2, y-20, 8,6, '#c52b2b');
+      // legs
+      pfill(x-8, y-10, 6,12, '#2b2b2b'); pfill(x+2, y-10, 6,12, '#2b2b2b');
+    }
+
+    // draw loop
+    function loop(ts){ t = ts/1000; ctx.clearRect(0,0,W,H);
+      if(!isNight) drawDay(); else drawNight();
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    // ---------- Link card behaviour ----------
+    document.querySelectorAll('.card .btn').forEach(a=>{
+      // open data-link in new tab when clicked; show link text
+      const link = a.getAttribute('data-link'); if(link) a.href = link; const small = a.parentElement.querySelector('small'); if(small) small.textContent = link || '(ganti href)';
+      a.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { a.click(); } });
+    });
+
+    // allow click on entire card to open link
+    document.querySelectorAll('.card').forEach(c=>{
+      c.addEventListener('click', (e)=>{ const anchor = c.querySelector('.btn'); if(anchor) anchor.click(); });
+      c.addEventListener('keydown', (e)=>{ if(e.key==='Enter') c.click(); });
+    });
+
+    // ensure canvas keeps full-screen crispness on orientation change
+    addEventListener('orientationchange', ()=> setTimeout(resize,300));
+
+    // initial hint: if user wants to preselect night based on time of day
+    (function initialAuto(){ const hour = new Date().getHours(); if(hour>=18||hour<6){ toggle.checked = true; isNight = true; updateScene(); } })();
+
+    // background animation performance note: if device is slow, reduce PIXEL or stop animations
+    // ---------- End ----------
+  </script>
+</body>
+</html>
